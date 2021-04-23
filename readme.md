@@ -31,10 +31,10 @@ The files in this repo corresponding to the parts of the project:
 
 Sources used in scripts:
 
-- [simple NN classifier] for `neuralnet1.R`;  
-- [simple NN regression] for `neuralnet2.R`;  
-- [manual neuralnet package] for `neuralnet3.R`;  
-- [customer classifier] for `neuralnet4.R`;  
+- [x] link to [simple NN classifier] for `neuralnet1.R`;  
+- [x] link to [simple NN regression] for `neuralnet2.R`;  
+- [x] link to [manual neuralnet package] for `neuralnet3.R`;  
+- [ ] link to[customer classifier] for `neuralnet4.R`;  
 
 Sources non-specific to scripts:
 
@@ -50,7 +50,7 @@ Sources non-specific to scripts:
 - [ ] part 10: [finnstats] blog;  
 - [ ] part 11: [stock price 1] part;  
 - [ ] part 12: [stock price 2] part;  
-- [ ] part 13: [stock prive 3] part;  
+- [ ] part 13: [stock price 3] part;  
 
 
 
