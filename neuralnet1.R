@@ -3,7 +3,6 @@
 library(dplyr)
 library(caret)
 library(neuralnet)
-setwd("/home/georgy/Документы/GitHub/neuralnet_test/")
 
 
 # Solve classification problem

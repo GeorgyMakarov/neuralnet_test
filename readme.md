@@ -34,7 +34,7 @@ Sources used in scripts:
 - [x] link to [simple NN classifier] for `neuralnet1.R`;  
 - [x] link to [simple NN regression] for `neuralnet2.R`;  
 - [x] link to [manual neuralnet package] for `neuralnet3.R`;  
-- [ ] link to[customer classifier] for `neuralnet4.R`;  
+- [ ] link to [customer classifier] for `neuralnet4.R`;  
 
 Sources non-specific to scripts:
 
@@ -52,6 +52,11 @@ Sources non-specific to scripts:
 - [ ] part 12: [stock price 2] part;  
 - [ ] part 13: [stock price 3] part;  
 
+
+### Data preprocessing
+
+`Neuralnet` package requires numeric inputs. It works poorly with factor vars.
+Activation function requires scaling the data.
 
 
 

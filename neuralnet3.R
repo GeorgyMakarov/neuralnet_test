@@ -7,11 +7,11 @@ library(neuralnet)
 
 # Predict infert case from parity, induced, spontaneous
 data("infert")
-
+head(infert)
 
 # Scale the data
 # Try different scaling and centering data
-mydata = infert %>% select(case, parity, induced, spontaneous)
+mydata = infert %>% dplyr::select(case, parity, induced, spontaneous)
 resval = mydata$case
 mydata = as.data.frame(scale(mydata, center = F))
 maxs   = apply(mydata, 2, max)
