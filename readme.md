@@ -34,7 +34,7 @@ Sources used in scripts:
 - [x] link to [simple NN classifier] for `neuralnet1.R`;  
 - [x] link to [simple NN regression] for `neuralnet2.R`;  
 - [x] link to [manual neuralnet package] for `neuralnet3.R`;  
-- [ ] link to [customer classifier] for `neuralnet4.R`;  
+- [x] link to [customer classifier] for `neuralnet4.R`;  
 
 Sources non-specific to scripts:
 
@@ -56,7 +56,31 @@ Sources non-specific to scripts:
 ### Data preprocessing
 
 `Neuralnet` package requires numeric inputs. It works poorly with factor vars.
-Activation function requires scaling the data.
+Activation function requires scaling the data. Data preprocessing algorithm:
+
+1. split numeric and factor variables;  
+2. scale numeric variables using your method of choice;  
+3. convert factor variables to dummy variables -- one hot encoding;  
+4. check if dummy variable column names are consistent with `R` -- see below;  
+
+
+Neural network uses activation functions. Activation functions outputs are in a
+range *[-1; +1]* always. The function will scale the data on every iteration if
+you have not scaled it prior to training the neural net. Since this is not very
+effective, the best way is to scale the variables upfront.
+
+There is no difference which scaling method you use. Theoretically it is not
+going to affect the result of the modeling. The rule of thumb here is to use
+the method depending on if you need to go back to original values in order to
+predict the response variable. If yes, then probably the `min - max` method is
+the best choice.
+
+Check if column names contain signs not appropriate for use in `R` -- such
+may be `-` sign. It is better to stick with traditional conventions and also
+change the `.` for the `_` sign in the name of the columns -- this way we do
+not confuse them with `S3` methods.
+
+
 
 
 
