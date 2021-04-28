@@ -27,6 +27,7 @@ mins   = apply(data_num, 2, min)
 data_num = as.data.frame(scale(x      = data_num, 
                                center = mins, 
                                scale  = maxs - mins))
+rm(maxs, mins)
 
 
 # Convert factor variables to one hot encoding variables using `caret` package.
@@ -44,7 +45,67 @@ rm(data_fc, data_num, dummies, resp_y)
 
 # Check if column names contain signs not appropriate for use in `R` -- such
 # may be '-' sign. It is better to stick with traditional conventions and also
-# change the '.' for the '_' sign in the name of the columns -- this way we do
-# not confuse them with `S3` methods.
+# change the '.' for the empty space in the name of the columns.
 names(mydata) = gsub(x = names(mydata), pattern = "-", replacement = "_")
 names(mydata) = gsub(x = names(mydata), pattern = "\\.", replacement = "")
+
+
+# Convert 'yes' to 1 and 'no' to 0 in order to have numeric response variable
+mydata$resp_y = as.numeric(mydata$resp_y)
+mydata$resp_y[mydata$resp_y == 1] = 0
+mydata$resp_y[mydata$resp_y == 2] = 1
+
+
+# Split the data to training and testing
+set.seed(123)
+in_train = createDataPartition(y = mydata$resp_y, p = 0.8, times = 1, list = F)
+training = mydata[in_train, ]
+testing  = mydata[-in_train, ]
+rm(in_train)
+
+
+# Make a neuralnet with default parameters
+# Check the quality of the model on testing set using confusion matrix. We are
+# interested in predicting positive cases -- use sensitivity to evaluate the
+# result of the model
+set.seed(123)
+basic_model = neuralnet(formula       = resp_y ~.,
+                        data          = training,
+                        linear.output = F)
+
+basic_pred = round(predict(basic_model, newdata = testing), 0)
+basic_res  = data.frame(obs = testing$resp_y, pred = basic_pred)
+basic_res$obs  = factor(ifelse(basic_res$obs == 0, "no", "yes"), 
+                        levels = c("yes", "no"))
+basic_res$pred = factor(ifelse(basic_res$pred == 0, "no", "yes"), 
+                        levels = c("yes", "no"))
+
+
+# Confusion matrix shows that this basic model is not better than the NIR base
+# line in predicting the positive class 'yes'. This is confirmed by p-value
+# 0.139 > 0.05 -- the accuracy is by pure chance higher than the NIR. The
+# sensitivity of the model is very low 0.49 -- we are correct about our positive
+# case less than 50% times.
+confusionMatrix(data = basic_res$pred, reference = basic_res$obs)
+rm(basic_pred, basic_model)
+
+
+# Model tuning: basically you can add layers and change number of neurons in
+# the model.
+set.seed(123)
+tuned_model = neuralnet(formula       = resp_y ~.,
+                        data          = training,
+                        linear.output = F,
+                        threshold     = 0.01,
+                        hidden        = c(5, 1))
+tuned_pred = round(predict(tuned_model, newdata = testing))
+tuned_res  = data.frame(obs = testing$resp_y, pred = tuned_pred)
+tuned_res$obs  = factor(ifelse(tuned_res$obs == 0, "no", "yes"), 
+                        levels = c("yes", "no"))
+tuned_res$pred = factor(ifelse(tuned_res$pred == 0, "no", "yes"), 
+                        levels = c("yes", "no"))
+
+confusionMatrix(data = tuned_res$pred, reference = tuned_res$obs)
+
+
+

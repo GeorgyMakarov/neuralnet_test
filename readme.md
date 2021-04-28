@@ -62,7 +62,8 @@ Activation function requires scaling the data. Data preprocessing algorithm:
 2. scale numeric variables using your method of choice;  
 3. convert factor variables to dummy variables -- one hot encoding;  
 4. check if dummy variable column names are consistent with `R` -- see below;  
-
+5. convert response to numeric -- *important* for classification;  
+6. split the data into training and testing;  
 
 Neural network uses activation functions. Activation functions outputs are in a
 range *[-1; +1]* always. The function will scale the data on every iteration if
