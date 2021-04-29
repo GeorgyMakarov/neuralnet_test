@@ -81,6 +81,17 @@ may be `-` sign. It is better to stick with traditional conventions and also
 change the `.` for the `_` sign in the name of the columns -- this way we do
 not confuse them with `S3` methods.
 
+### Neuralnet tuning params
+
+Neural network has *3* basic tuning params and *5* advanced tuning features.
+Basic tuning params include: algorithm, learning rate limit, learning rate 
+factor. Advanced tuning parameters: threshold, stepmax, startweights, 
+lifesign and lifesign step.
+
+
+
+
+
 
 
 

@@ -1,4 +1,6 @@
+# Predict if a client subscribes a term deposit 
 # Link: http://www.learnbymarketing.com/tutorials/neural-networks-in-r-tutorial/
+# Data: http://archive.ics.uci.edu/ml/datasets/Bank+Marketing
 
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(caret))
@@ -8,12 +10,18 @@ mydata = data.table::fread("bank.csv", stringsAsFactors = T)
 mydata = as.data.frame(mydata)
 
 
+# Dataset explanation prescribes to not use duration as a variable as this
+# is going to ruin the idea of the modeling, becuase we know the outcome of
+# a call from its duration.
+mydata = mydata %>% select(-duration)
+
+
 # Split numeric and factor variables. This approach helps to scale the numeric
 # variables and convert factors to dummy variables.
 data_num = 
     mydata %>% 
-    select(age, balance, day, duration, 
-           campaign, pdays, previous)
+    select(age, campaign, pdays, previous, emp.var.rate, cons.price.idx,
+           cons.conf.idx, euribor3m, nr.employed)
 
 f_cols  = setdiff(colnames(mydata), colnames(data_num))
 data_fc = mydata %>% select(f_cols)
@@ -27,7 +35,30 @@ mins   = apply(data_num, 2, min)
 data_num = as.data.frame(scale(x      = data_num, 
                                center = mins, 
                                scale  = maxs - mins))
+data_num$resp = data_fc$y
 rm(maxs, mins)
+
+# Select numeric variables that correspond to classification problem. Select
+# variables that have significant differencies by class.
+data_num %>% 
+    group_by(resp) %>% 
+    summarise(age = mean(age),
+              camp = mean(campaign),
+              pdays = mean(pdays),
+              prev = mean(previous),
+              empv = mean(emp.var.rate),
+              cpi  = mean(cons.price.idx),
+              cci  = mean(cons.conf.idx),
+              eur  = mean(euribor3m),
+              empl = mean(nr.employed))
+
+data_num = 
+    data_num %>% 
+    select(pdays, emp.var.rate, cons.price.idx, euribor3m, nr.employed)
+
+
+# Select factors that help split the classes
+
 
 
 # Convert factor variables to one hot encoding variables using `caret` package.
@@ -95,9 +126,10 @@ rm(basic_pred, basic_model)
 set.seed(123)
 tuned_model = neuralnet(formula       = resp_y ~.,
                         data          = training,
-                        linear.output = F,
-                        threshold     = 0.01,
-                        hidden        = c(5, 1))
+                        hidden        = c(10, 3),
+                        linear.output = FALSE,
+                        threshold     = 0.1,
+                        stepmax       = 1e6)
 tuned_pred = round(predict(tuned_model, newdata = testing))
 tuned_res  = data.frame(obs = testing$resp_y, pred = tuned_pred)
 tuned_res$obs  = factor(ifelse(tuned_res$obs == 0, "no", "yes"), 
@@ -105,7 +137,6 @@ tuned_res$obs  = factor(ifelse(tuned_res$obs == 0, "no", "yes"),
 tuned_res$pred = factor(ifelse(tuned_res$pred == 0, "no", "yes"), 
                         levels = c("yes", "no"))
 
+
+# The matrix shows that the tuned model 
 confusionMatrix(data = tuned_res$pred, reference = tuned_res$obs)
-
-
-
