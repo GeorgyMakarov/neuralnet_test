@@ -58,20 +58,28 @@ data_num =
 
 
 # Select factors that help split the classes
-
+# Select those factors, which help split `yes` class: contact(cellular), 
+# month(dec, mar), poutcome(success)
+prop.table(table(data_fc$contact, data_fc$y), 1)
+prop.table(table(data_fc$month, data_fc$y), 1)
+prop.table(table(data_fc$poutcome, data_fc$y), 1)
+data_fc$contact = relevel(data_fc$contact, ref = "telephone")
+resp_y  = data_fc$y
+data_fc = data_fc %>% select(contact, month, poutcome)
 
 
 # Convert factor variables to one hot encoding variables using `caret` package.
-# Do not convert the response variable -- keep it separately.
-resp_y  = data_fc$y
-data_fc = data_fc %>% select(-y)
-dummies = dummyVars(formula = ~., data = data_fc)
-dummies = as.data.frame(predict(dummies, newdata = data_fc))
-
+# Do not convert the response variable -- keep it separately. I do not use the
+# built in dummyVars because I want to hot encode only specific levels of the
+# factors.
+data_fc = as.data.frame(model.matrix(~contact+month+poutcome, data = data_fc))
+data_fc =
+    data_fc %>% select(contactcellular, monthdec, monthmar, poutcomesuccess)
+colnames(data_fc) = c("cell", "dec", "mar", "prevout")
 
 # Make new dataset with from response, numeric and dummy variables
-mydata = cbind(resp_y, data_num, dummies)
-rm(data_fc, data_num, dummies, resp_y)
+mydata = cbind(resp_y, data_num, data_fc)
+rm(data_fc, data_num, resp_y)
 
 
 # Check if column names contain signs not appropriate for use in `R` -- such
@@ -126,10 +134,10 @@ rm(basic_pred, basic_model)
 set.seed(123)
 tuned_model = neuralnet(formula       = resp_y ~.,
                         data          = training,
-                        hidden        = c(10, 3),
+                        hidden        = c(10, 1),
                         linear.output = FALSE,
                         threshold     = 0.1,
-                        stepmax       = 1e6)
+                        stepmax       = 1e5)
 tuned_pred = round(predict(tuned_model, newdata = testing))
 tuned_res  = data.frame(obs = testing$resp_y, pred = tuned_pred)
 tuned_res$obs  = factor(ifelse(tuned_res$obs == 0, "no", "yes"), 
@@ -138,5 +146,5 @@ tuned_res$pred = factor(ifelse(tuned_res$pred == 0, "no", "yes"),
                         levels = c("yes", "no"))
 
 
-# The matrix shows that the tuned model 
+# The matrix shows that the tuned model is better than the non-tuned model
 confusionMatrix(data = tuned_res$pred, reference = tuned_res$obs)

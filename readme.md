@@ -88,6 +88,11 @@ Basic tuning params include: algorithm, learning rate limit, learning rate
 factor. Advanced tuning parameters: threshold, stepmax, startweights, 
 lifesign and lifesign step.
 
+ - `algorithm`              the type of backpropagation to compute the network  
+ - `learning rate limit`    a vector with lowest and highest limit of *LR*  
+ - `learning rate factor`   a vector of multiplication for *LR*  
+ 
+
 
 
 
