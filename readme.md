@@ -21,12 +21,13 @@ This project has *4* parts:
 
 The files in this repo corresponding to the parts of the project:
 
-| filename     | part of the project         |
-|--------------|-----------------------------|
-| neuralnet1.R | simple neuralnet classifier |
-| neuralnet2.R | simple neuralnet regression |
-| neuralnet3.R | medium neuralnet classifier |
-| neuralnet4.R | another classifier			 |
+| filename              | part of the project         |
+|-----------------------|-----------------------------|
+| 01_neuralnet1.R       | simple neuralnet classifier |
+| 02_neuralnet2.R       | simple neuralnet regression |
+| 03_neuralnet3.R       | medium neuralnet classifier |
+| 04_neuralnet4.R       | another classifier	      |
+| 05_height_predictor.R | predict height from gender  |
 
 
 Sources used in scripts:
@@ -38,7 +39,7 @@ Sources used in scripts:
 
 Sources non-specific to scripts:
 
-- [ ] part 01: [deep learning overview] for all NN;  
+- [x] part 01: [deep learning overview] for all NN;  
 - [ ] part 02: [machine learning] for recommendation systems;  
 - [ ] part 03: [intro into deep learning] for all NN;  
 - [ ] part 04: [deep learning] book;  
@@ -83,14 +84,18 @@ not confuse them with `S3` methods.
 
 ### Neuralnet tuning params
 
-Neural network has *3* basic tuning params and *5* advanced tuning features.
+Neural network has *3* basic tuning params and *3* advanced tuning features.
 Basic tuning params include: algorithm, learning rate limit, learning rate 
-factor. Advanced tuning parameters: threshold, stepmax, startweights, 
-lifesign and lifesign step.
+factor. Advanced tuning parameters: threshold, stepmax, startweights.
 
  - `algorithm`              the type of backpropagation to compute the network  
  - `learning rate limit`    a vector with lowest and highest limit of *LR*  
  - `learning rate factor`   a vector of multiplication for *LR*  
+ - `threshold`              a size of an error when *NN* stops learning  
+ - `stepmax`                a length of training session  
+ - `startweights`           a vector with starting values for the weights  
+ 
+ 
  
 
 
