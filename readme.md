@@ -28,8 +28,6 @@ The files in this repo corresponding to the parts of the project:
 | 03_neuralnet3.R       | medium neuralnet classifier |
 | 04_neuralnet4.R       | another classifier	      |
 | 05_height_predictor.R | predict height from gender  |
-| 06_mnist_h20.R        | predict digits MNIST        |
-
 
 Sources used in scripts:
 
