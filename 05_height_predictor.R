@@ -61,7 +61,9 @@ confusionMatrix(data = y_hat, reference = testing$sex)
 
 
 # Rebuild the simple model with optimizing the `F-score` instead of overall
-# accuracy. This allows to make better predictions on females.
-
-
-
+# accuracy. This allows to make better predictions on females. The F-score
+# balances the prediction power for sensitivity and specificity.
+y_hat =
+    ifelse(testing$height > 66, "Male", "Female") %>% 
+    factor(levels = levels(testing$sex))
+confusionMatrix(data = y_hat, reference = testing$sex)

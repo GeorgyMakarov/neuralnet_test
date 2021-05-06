@@ -28,6 +28,7 @@ The files in this repo corresponding to the parts of the project:
 | 03_neuralnet3.R       | medium neuralnet classifier |
 | 04_neuralnet4.R       | another classifier	      |
 | 05_height_predictor.R | predict height from gender  |
+| 06_mnist_h20.R        | predict digits MNIST        |
 
 
 Sources used in scripts:
@@ -40,8 +41,8 @@ Sources used in scripts:
 Sources non-specific to scripts:
 
 - [x] part 01: [deep learning overview] for all NN;  
-- [ ] part 02: [machine learning] for recommendation systems;  
-- [ ] part 03: [intro into deep learning] for all NN;  
+- [x] part 02: [machine learning] for recommendation systems;  
+- [x] part 03: [intro into deep learning] for all NN;  
 - [ ] part 04: [deep learning] book;  
 - [ ] part 05: [adaptive resample] in caret;  
 - [ ] part 06: [class imbalances] in caret;  
@@ -53,6 +54,21 @@ Sources non-specific to scripts:
 - [ ] part 12: [stock price 2] part;  
 - [ ] part 13: [stock price 3] part;  
 
+### Architecture
+
+**Multilayer perceptron** is a *feed-forward* artificial network that maps the
+sets of inputs with a set of appropriate outputs. It consists of multiple layers
+of nodes with each layer fully connected to the next one. It uses the non-linear
+activation function and backpropagation for training. *MLP* can distinguish data
+with non-linear dependencies.
+
+**Recurrent neural network** is a network where units' connections create a
+directed cycle. *RNN* exhibits dynamic temporal behavior. It can use internal
+memory to process inputs. An example of such network is *LSTM* network.
+
+**Convolutional neural network** is a network where connections between neurons
+are organized in patterns, inspired by animal visual cortex. This way *CNN* is
+reacting to overlapping regions tiling the visual field.
 
 ### Data preprocessing
 
