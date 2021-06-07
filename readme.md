@@ -21,13 +21,15 @@ This project has *4* parts:
 
 The files in this repo corresponding to the parts of the project:
 
-| filename              | part of the project         |
-|-----------------------|-----------------------------|
-| 01_neuralnet1.R       | simple neuralnet classifier |
-| 02_neuralnet2.R       | simple neuralnet regression |
-| 03_neuralnet3.R       | medium neuralnet classifier |
-| 04_neuralnet4.R       | another classifier	      |
-| 05_height_predictor.R | predict height from gender  |
+| filename               | part of the project         |
+|------------------------|-----------------------------|
+| 01_neuralnet1.R        | simple neuralnet classifier |
+| 02_neuralnet2.R        | simple neuralnet regression |
+| 03_neuralnet3.R        | medium neuralnet classifier |
+| 04_neuralnet4.R        | another classifier	       |
+| 05_height_predictor.R  | predict height from gender  |
+| 06_breas_cancer.R      | basic NN comparison         |
+| 07_adaptive_resample.R | adaptive resampling         |
 
 Sources used in scripts:
 
@@ -41,7 +43,7 @@ Sources non-specific to scripts:
 - [x] part 01: [deep learning overview] for all NN;  
 - [x] part 02: [machine learning] for recommendation systems;  
 - [x] part 03: [intro into deep learning] for all NN;  
-- [ ] part 04: [deep learning] book;  
+- [x] part 04: [deep learning] book;  
 - [ ] part 05: [adaptive resample] in caret;  
 - [ ] part 06: [class imbalances] in caret;  
 - [ ] part 07: [neural networks] in caret;  
@@ -109,16 +111,12 @@ factor. Advanced tuning parameters: threshold, stepmax, startweights.
  - `stepmax`                a length of training session  
  - `startweights`           a vector with starting values for the weights  
  
- 
- 
+### Adaptive resampling
 
-
-
-
-
-
-
-
+We use grid search to find the best combination of tuning parameters. Searching
+the full grid is a time consuming process. There is an alternative to full grid
+search, which is to resample from a set of parameters that are in the nearest
+neighborhood of the optimal settings.
 
 <br />
 <br />
