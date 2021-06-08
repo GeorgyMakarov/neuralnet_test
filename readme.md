@@ -44,7 +44,7 @@ Sources non-specific to scripts:
 - [x] part 02: [machine learning] for recommendation systems;  
 - [x] part 03: [intro into deep learning] for all NN;  
 - [x] part 04: [deep learning] book;  
-- [ ] part 05: [adaptive resample] in caret;  
+- [x] part 05: [adaptive resample] in caret;  
 - [ ] part 06: [class imbalances] in caret;  
 - [ ] part 07: [neural networks] in caret;  
 - [ ] part 08: [Mikhail Pankov] github repo;
@@ -117,6 +117,47 @@ We use grid search to find the best combination of tuning parameters. Searching
 the full grid is a time consuming process. There is an alternative to full grid
 search, which is to resample from a set of parameters that are in the nearest
 neighborhood of the optimal settings.
+
+Library `caret` allows adaptive resampling using **4** additional parameters:
+
+- `min` -- minimum number of resamples used for each tuning parameter; defaults 
+to **5** -- increase of this parameter slows down the algorithm, but increases
+the likelihood of finding a good model;  
+- `alpha` is a confidence level, which removes parameter settings; impact is
+unknown;  
+- `method` is a choice of two: *gls* for linear model, *BT* for a Bradley-Terry
+model; the latter is useful when you expect $ROC ~ 1$;  
+- `complete` a logical value: *T* -- if you want the trace of how the algorithm
+found the best set of parameters; *F* -- if you want the results only;
+
+
+### Subsampling for class imbalances
+
+Class imbalance leads to model overfitting. There is an approach to resolve a 
+class imbalance problem by subsampling the training data. There are **3** ways
+to sample the training data in this approach:
+
+- `down-sampling` -- randomly select observations from major class until its
+the same size as minor class; this way leads to potential loss of valuable
+patterns of the data;  
+
+- `up-sampling` -- randomly select with replacement an observations from the 
+minority class until its size is the same as the majority class;
+
+- `hybrid` -- downsize the majority class and synthesize new data points in the
+minority class;
+
+**Never apply** any of this techniques to the **test set** -- you want the test
+set to contain the original weights of each class. There are **2** pitfalls
+which come along any of those ways:
+
+1. class imbalance may appear during resampling when you tune a model;  
+2. subsampling may increase model uncertainty -- we are not sure if a model
+behavior follows the development of real event;
+
+The **alternative** is to include the subsampling inside of the usual resampling
+procedure. 
+
 
 <br />
 <br />
