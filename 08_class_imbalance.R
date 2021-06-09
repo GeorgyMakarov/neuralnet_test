@@ -33,3 +33,68 @@ all_control <- trainControl(method          = "repeatedcv",
                             classProbs      = T,
                             summaryFunction = twoClassSummary,
                             sampling        = "down")
+
+set.seed(5627)
+orig_fit <- train(Class ~.,
+                  data      = imb_train,
+                  method    = "treebag",
+                  nbagg     = 50,
+                  metric    = "ROC",
+                  trControl = all_control)
+
+set.seed(5627)
+down_outside <- train(Class ~ ., 
+                      data      = down_train, 
+                      method    = "treebag",
+                      nbagg     = 50,
+                      metric    = "ROC",
+                      trControl = all_control)
+
+set.seed(5627)
+up_outside <- train(Class ~ ., 
+                    data      = up_train, 
+                    method    = "treebag",
+                    nbagg     = 50,
+                    metric    = "ROC",
+                    trControl = all_control)
+
+set.seed(5627)
+rose_outside <- train(Class ~ ., 
+                      data      = rose_train, 
+                      method    = "treebag",
+                      nbagg     = 50,
+                      metric    = "ROC",
+                      trControl = all_control)
+
+
+# Create a wrapper that compares the model results
+list_of_models <- list(orig = orig_fit,
+                       down = down_outside,
+                       up   = up_outside,
+                       rose = rose_outside)
+
+mods_resampling <- resamples(list_of_models)
+test_roc        <- function(model, data){
+  library(pROC)
+  roc_obj <- roc(data$Class,
+                 predict(model, data, type = "prob")[, "Class1"], 
+                 levels = c("Class2", "Class1"))
+  ci(roc_obj)
+}
+
+
+# Check models performance using the wrapper and test set
+outside_test <- lapply(list_of_models, test_roc, data = imb_test)
+outside_test <- lapply(outside_test, as.vector)
+outside_test <- do.call("rbind", outside_test)
+colnames(outside_test) <- c("lower", "ROC", "upper")
+outside_test <- as.data.frame(outside_test)
+
+
+# Comparison of models' performance in training and testing sets shows that
+# up-sampling leads to overfitting the model. ROSE sampling has the lowest
+# performance on the training set, but that means that all possible combinations
+# of variables were sampled -- this is proved by the best performance on the
+# test set.
+summary(mods_resampling, metric = "ROC")
+outside_test
