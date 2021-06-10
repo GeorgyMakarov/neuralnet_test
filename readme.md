@@ -45,9 +45,9 @@ Sources non-specific to scripts:
 - [x] part 03: [intro into deep learning] for all NN;  
 - [x] part 04: [deep learning] book;  
 - [x] part 05: [adaptive resample] in caret;  
-- [ ] part 06: [class imbalances] in caret;  
-- [ ] part 07: [neural networks] in caret;  
-- [ ] part 08: [Mikhail Pankov] github repo;
+- [x] part 06: [class imbalances] in caret;  
+- [x] part 07: [neural networks] in caret;  
+- [x] part 08: [Mikhail Pankov] github repo;
 - [ ] part 09: [vidhya blog] basic NN;  
 - [ ] part 10: [finnstats] blog;  
 - [ ] part 11: [stock price 1] part;  
@@ -156,7 +156,13 @@ which come along any of those ways:
 behavior follows the development of real event;
 
 The **alternative** is to include the subsampling inside of the usual resampling
-procedure. 
+procedure. This method has its own drawbacks:
+
+- there is no obvious answer if you have to do the subsampling before or after
+the pre-processing; the default behavior is to subsample prior to pre-process;  
+
+- sparsely represented factor categories turn into zero-variance predictors;  
+- tuning the length of the model may end up in sub-optimal parameters;  
 
 
 <br />
