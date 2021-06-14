@@ -21,15 +21,18 @@ This project has *4* parts:
 
 The files in this repo corresponding to the parts of the project:
 
-| filename               | part of the project         |
-|------------------------|-----------------------------|
-| 01_neuralnet1.R        | simple neuralnet classifier |
-| 02_neuralnet2.R        | simple neuralnet regression |
-| 03_neuralnet3.R        | medium neuralnet classifier |
-| 04_neuralnet4.R        | another classifier	       |
-| 05_height_predictor.R  | predict height from gender  |
-| 06_breas_cancer.R      | basic NN comparison         |
-| 07_adaptive_resample.R | adaptive resampling         |
+| filename                    | part of the project         |
+|-----------------------------|-----------------------------|
+| 01_neuralnet1.R             | simple neuralnet classifier |
+| 02_neuralnet2.R             | simple neuralnet regression |
+| 03_neuralnet3.R             | medium neuralnet classifier |
+| 04_neuralnet4.R             | another classifier	    |
+| 05_height_predictor.R       | predict height from gender  |
+| 06_breas_cancer.R           | basic NN comparison         |
+| 07_adaptive_resample.R      | adaptive resampling         |
+| 08_class_imbalances.R       | resampling                  |
+| 09_subsampling_resampling.R | resampling                  |
+| 10_cereals_nn.R             | simple neuralnet regression |
 
 Sources used in scripts:
 
@@ -48,11 +51,11 @@ Sources non-specific to scripts:
 - [x] part 06: [class imbalances] in caret;  
 - [x] part 07: [neural networks] in caret;  
 - [x] part 08: [Mikhail Pankov] github repo;
-- [ ] part 09: [vidhya blog] basic NN;  
-- [ ] part 10: [finnstats] blog;  
-- [ ] part 11: [stock price 1] part;  
-- [ ] part 12: [stock price 2] part;  
-- [ ] part 13: [stock price 3] part;  
+- [x] part 09: [vidhya blog] basic NN;  
+- [x] part 10: [finnstats] blog;  
+- [x] part 11: [stock price 1] part;  
+- [x] part 12: [stock price 2] part;  
+- [x] part 13: [stock price 3] part;  
 
 ### Architecture
 
@@ -163,6 +166,26 @@ the pre-processing; the default behavior is to subsample prior to pre-process;
 
 - sparsely represented factor categories turn into zero-variance predictors;  
 - tuning the length of the model may end up in sub-optimal parameters;  
+
+### Conclusions
+
+Training a neural network in R using `neuralnet` package algorithm:
+
+1. neural network accepts *numeric* inputs only;  
+2. scale numeric variables;  
+3. convert factor variables to dummy variables;  
+4. convert response to numeric;  
+5. split data to training and testing;  
+6. resample the training data for class imbalances;  
+7. split training set to training and validation;  
+7. train neural net using a number of parameters:  
+        - `algorithm`  
+        - `learning rate limit`  
+        - `learning rate factor`    
+        - `threshold`   
+        - `stepmax`              
+        - `startweights`  
+8. use grid search to find best set of parameters.  
 
 
 <br />

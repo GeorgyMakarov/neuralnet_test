@@ -52,8 +52,3 @@ plot(x     = obs_test,
 
 rmse_res <- (sum((obs_test - nn_trans) ^ 2) / length(nn_trans)) ^ 0.5
 rmse_res
-
-# Neural network crossvalidation ------------------------------------------
-
-
-
