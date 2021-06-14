@@ -187,6 +187,18 @@ Training a neural network in R using `neuralnet` package algorithm:
         - `startweights`  
 8. use grid search to find best set of parameters.  
 
+**Avoid** activation functions: `tanh`, `sigmoid`  
+**Use** activation function: `ReLU`  
+
+Manual tuning:
+
+- increase hidden layers will increase capacity;  
+- decrease in regularization will increase capacity;  
+- decrease of dropout will increase capacity;  
+- increase number of nodes will increase capacity;  
+
+The most **important** tuning parameter is **learning rate** -- tune it first;
+
 
 <br />
 <br />
