@@ -98,11 +98,37 @@ cars_fit$bestTune
 cars_fit$finalModel$param
 cars_fit
 
-# TODO: using softplus increased Rsq from 0.75 to 0.76
-# TODO: try adding layer2
-# TODO: try adding expand.grid(.layer1=c(1:4), .layer2=c(0:4), .layer3=c(0))
-# TODO: try running different combinations of LR / layers in databricks -- this
-# is a good idea since the grid search might require a lot of time and res.
 
+# Seq along the vector of learning rates and try a combination of different
+# layers setups in order to achieve the optimal parameters. Compare results by
+# R squared. I only choose the to tune the learning rate first.
+lrn_rates <- c(0.25, 0.20, 0.15, 0.10, 0.05, 0.01)
+tune_grd  <- expand.grid(.layer1 = c(1:4), .layer2 = c(0:4), .layer3 = c(0:4))
+rsq_fit   <- data.frame()
 
+for (i in seq_along(lrn_rates)){
+  lr <- lrn_rates[i]
+  
+  set.seed(5627)
+  
+  cars_fit <- train(train_x, train_y,
+                    method       = "neuralnet",
+                    trControl    = adapt_ctrl,
+                    tuneGrid     = tune_grd,
+                    learningrate = lr,
+                    act.fct      = softplus,
+                    threshold    = 0.1,
+                    stepmax      = 1e+05)
+  
+  tune_value <- cars_fit$finalModel$tuneValue
+  lr_out     <- cars_fit$finalModel$param$learningrate
+  rsq_out    <- max(cars_fit$results$Rsquared)
+  out_df     <- data.frame(tune_value)
+  out_df$lr  <- round(lr_out, 2)
+  out_df$rsq <- rsq_out
+  rsq_fit    <- rbind(rsq_fit, out_df)
+  
+  rm(i, lr, cars_fit, tune_value, lr_out, rsq_out, out_df)
+}
 
+rsq_fit
