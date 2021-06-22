@@ -99,36 +99,66 @@ cars_fit$finalModel$param
 cars_fit
 
 
-# Seq along the vector of learning rates and try a combination of different
-# layers setups in order to achieve the optimal parameters. Compare results by
-# R squared. I only choose the to tune the learning rate first.
-lrn_rates <- c(0.25, 0.20, 0.15, 0.10, 0.05, 0.01)
-tune_grd  <- expand.grid(.layer1 = c(1:4), .layer2 = c(0:4), .layer3 = c(0:4))
-rsq_fit   <- data.frame()
+# `Neuralnet` by default uses `rprop+` algorithm for backpropagation. This
+# algorithm's tuning parameters are learning rate limit and learning rate
+# factor. We perform full grid search to setup learning rate parameters. Here
+# the recommendation is to not use too high min learning rate limit, as this
+# might stop model training.
+# learning rate limit  [1e-10; 0.1] -> [1e-05; 0.5]
+# learning rate factor [0.5; 1.2]   -> [0.5; 1.2]  
+# This allows the R squared to go up from 0.76 to 0.77
+lr_tuning <- expand.grid(lrr_min = c(1e-10, 1e-09, 1e-08, 1e-07, 1e-06, 1e-05),
+                         lrr_max = c(0.1, 0.2, 0.3, 0.4, 0.5))
+rsq_vect <- data.frame()
 
-for (i in seq_along(lrn_rates)){
-  lr <- lrn_rates[i]
+for (i in seq(nrow(lr_tuning))){
+  
+  lr_min <- lr_tuning$lrr_min[i]
+  lr_max <- lr_tuning$lrr_max[i]
   
   set.seed(5627)
+  temp_fit <- neuralnet(formula      = price ~ .,
+                        data         = train_transf,
+                        rep          = 1,
+                        hidden       = 6,
+                        threshold    = 0.1,
+                        algorithm    = "rprop+",
+                        learningrate.limit  = list(min   = lr_min, 
+                                                   max   = lr_max),
+                        learningrate.factor = list(minus = 0.5,   
+                                                   plus  = 1.2),
+                        act.fct      = softplus,
+                        err.fct      = "sse",
+                        stepmax      = 1e+06)
   
-  cars_fit <- train(train_x, train_y,
-                    method       = "neuralnet",
-                    trControl    = adapt_ctrl,
-                    tuneGrid     = tune_grd,
-                    learningrate = lr,
-                    act.fct      = softplus,
-                    threshold    = 0.1,
-                    stepmax      = 1e+05)
+  temp_pred <- as.vector(temp_fit$net.result[[1]])
+  temp_obs  <- train_transf$price
+  rsq       <- cor(temp_pred, temp_obs) ^ 2
+  out_df    <- data.frame(lr_min, lr_max, rsq)
   
-  tune_value <- cars_fit$finalModel$tuneValue
-  lr_out     <- cars_fit$finalModel$param$learningrate
-  rsq_out    <- max(cars_fit$results$Rsquared)
-  out_df     <- data.frame(tune_value)
-  out_df$lr  <- round(lr_out, 2)
-  out_df$rsq <- rsq_out
-  rsq_fit    <- rbind(rsq_fit, out_df)
-  
-  rm(i, lr, cars_fit, tune_value, lr_out, rsq_out, out_df)
+  rsq_vect  <- rbind(rsq_vect, out_df)
+  rm(i, lr_min, lr_max, temp_fit, temp_pred, temp_obs, rsq, out_df)
 }
 
-rsq_fit
+rsq_vect
+
+
+# Train a model with modified learning rate and search through the grid of
+# different layers combinations. Use adaptive resampling technique to find
+# the best model. To ensure that the model will converge -- increase the step
+# to 1e+07.
+tune_grd  <- expand.grid(.layer1 = c(3:6), .layer2 = c(0:3), .layer3 = c(0:3))
+set.seed(5627)
+
+cars_fit <- train(train_x, train_y,
+                  method              = "neuralnet",
+                  trControl           = adapt_ctrl,
+                  tuneGrid            = tune_grd,
+                  learningrate.limit  = list(min   = 1e-05, max  = 0.5),
+                  learningrate.factor = list(minus = 0.5,   plus = 1.2),
+                  act.fct             = softplus,
+                  rep                 = 1,
+                  algorithm           = "rprop+",
+                  err.fct             = "sse",
+                  threshold           = 0.1,
+                  stepmax             = 1e+07)

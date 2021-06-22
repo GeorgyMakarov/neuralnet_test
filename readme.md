@@ -33,6 +33,7 @@ The files in this repo corresponding to the parts of the project:
 | 08_class_imbalances.R       | resampling                  |
 | 09_subsampling_resampling.R | resampling                  |
 | 10_cereals_nn.R             | simple neuralnet regression |
+| 11_regression_tuning.R      | full regression tuning      |
 
 Sources used in scripts:
 
@@ -113,6 +114,12 @@ factor. Advanced tuning parameters: threshold, stepmax, startweights.
  - `threshold`              a size of an error when *NN* stops learning  
  - `stepmax`                a length of training session  
  - `startweights`           a vector with starting values for the weights  
+
+`Neuralnet` by default uses `rprop+` algorithm for backpropagation. This
+algorithm's tuning parameters are learning rate limit and learning rate
+factor. Perform full grid search to setup learning rate parameters. Here
+the recommendation is to not use too high min learning rate limit, as this
+might stop model training.
  
 ### Adaptive resampling
 
@@ -132,7 +139,6 @@ unknown;
 model; the latter is useful when you expect $ROC ~ 1$;  
 - `complete` a logical value: *T* -- if you want the trace of how the algorithm
 found the best set of parameters; *F* -- if you want the results only;
-
 
 ### Subsampling for class imbalances
 
