@@ -104,11 +104,11 @@ cars_fit
 # factor. We perform full grid search to setup learning rate parameters. Here
 # the recommendation is to not use too high min learning rate limit, as this
 # might stop model training.
-# learning rate limit  [1e-10; 0.1] -> [1e-05; 0.5]
+# learning rate limit  [1e-10; 0.1] -> [1e-08; 0.3]
 # learning rate factor [0.5; 1.2]   -> [0.5; 1.2]  
-# This allows the R squared to go up from 0.76 to 0.77
+# This allows the R squared to go up from 0.76 to 0.78
 lr_tuning <- expand.grid(lrr_min = c(1e-10, 1e-09, 1e-08, 1e-07, 1e-06, 1e-05),
-                         lrr_max = c(0.1, 0.2, 0.3, 0.4, 0.5))
+                         lrr_max = c(0.1, 0.2, 0.3, 0.4))
 rsq_vect <- data.frame()
 
 for (i in seq(nrow(lr_tuning))){
@@ -154,11 +154,15 @@ cars_fit <- train(train_x, train_y,
                   method              = "neuralnet",
                   trControl           = adapt_ctrl,
                   tuneGrid            = tune_grd,
-                  learningrate.limit  = list(min   = 1e-05, max  = 0.5),
+                  learningrate.limit  = list(min   = 1e-08, max  = 0.3),
                   learningrate.factor = list(minus = 0.5,   plus = 1.2),
                   act.fct             = softplus,
                   rep                 = 1,
                   algorithm           = "rprop+",
                   err.fct             = "sse",
                   threshold           = 0.1,
-                  stepmax             = 1e+07)
+                  stepmax             = 1e+06)
+
+
+# Compare caret model results to baseline model on testing set
+
