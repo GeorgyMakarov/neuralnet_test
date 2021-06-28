@@ -162,7 +162,3 @@ cars_fit <- train(train_x, train_y,
                   err.fct             = "sse",
                   threshold           = 0.1,
                   stepmax             = 1e+06)
-
-
-# Compare caret model results to baseline model on testing set
-
